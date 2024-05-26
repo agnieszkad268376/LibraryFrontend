@@ -2,8 +2,7 @@ const mockBooks = [
   {
     title: "To Kill a Mockingbird",
     author: "Harper Lee",
-    genre: "Classic",
-    isbn: "978-0061120084",
+    isbn: "97-0061120084",
     publisher: "Harper Perennial Modern Classics",
     year: 1960,
     copies: 10,
@@ -11,8 +10,7 @@ const mockBooks = [
   {
     title: "1984",
     author: "George Orwell",
-    genre: "Dystopian",
-    isbn: "978-0451524935",
+    isbn: "9780451524935",
     publisher: "Signet Classic",
     year: 1949,
     copies: 8,
@@ -20,8 +18,7 @@ const mockBooks = [
   {
     title: "Harry Potter and the Philosopher's Stone",
     author: "J.K. Rowling",
-    genre: "Fantasy",
-    isbn: "978-0590353427",
+    isbn: "9780590353427",
     publisher: "Bloomsbury",
     year: 1997,
     copies: 15,
@@ -29,8 +26,7 @@ const mockBooks = [
   {
     title: "The Great Gatsby",
     author: "F. Scott Fitzgerald",
-    genre: "Classic",
-    isbn: "978-0743273565",
+    isbn: "9780743273565",
     publisher: "Scribner",
     year: 1925,
     copies: 12,
@@ -38,8 +34,7 @@ const mockBooks = [
   {
     title: "To the Lighthouse",
     author: "Virginia Woolf",
-    genre: "Modernist",
-    isbn: "978-0156907392",
+    isbn: "9780156907392",
     publisher: "Mariner Books",
     year: 1927,
     copies: 6,
@@ -47,8 +42,7 @@ const mockBooks = [
   {
     title: "The Catcher in the Rye",
     author: "J.D. Salinger",
-    genre: "Literary Fiction",
-    isbn: "978-0316769488",
+    isbn: "9780316769488",
     publisher: "Little, Brown and Company",
     year: 1951,
     copies: 9,
@@ -56,8 +50,7 @@ const mockBooks = [
   {
     title: "Brave New World",
     author: "Aldous Huxley",
-    genre: "Dystopian",
-    isbn: "978-0060850524",
+    isbn: "9780060850524",
     publisher: "Harper Perennial Modern Classics",
     year: 1932,
     copies: 7,
@@ -65,8 +58,7 @@ const mockBooks = [
   {
     title: "Moby-Dick",
     author: "Herman Melville",
-    genre: "Adventure",
-    isbn: "978-1542095624",
+    isbn: "9781542095624",
     publisher: "Classic Books Library",
     year: 1851,
     copies: 11,
@@ -74,8 +66,7 @@ const mockBooks = [
   {
     title: "Pride and Prejudice",
     author: "Jane Austen",
-    genre: "Romance",
-    isbn: "978-0141439518",
+    isbn: "9780141439518",
     publisher: "Penguin Classics",
     year: 1813,
     copies: 14,
@@ -83,8 +74,7 @@ const mockBooks = [
   {
     title: "Lord of the Flies",
     author: "William Golding",
-    genre: "Dystopian",
-    isbn: "978-0140283334",
+    isbn: "9780140283334",
     publisher: "Penguin Books",
     year: 1954,
     copies: 8,
@@ -92,8 +82,7 @@ const mockBooks = [
   {
     title: "The Hobbit",
     author: "J.R.R. Tolkien",
-    genre: "Fantasy",
-    isbn: "978-0547928227",
+    isbn: "9780547928227",
     publisher: "Houghton Mifflin Harcourt",
     year: 1937,
     copies: 13,
@@ -101,8 +90,7 @@ const mockBooks = [
   {
     title: "Crime and Punishment",
     author: "Fyodor Dostoevsky",
-    genre: "Psychological Fiction",
-    isbn: "978-0143058146",
+    isbn: "9780143058146",
     publisher: "Penguin Books",
     year: 1866,
     copies: 10,
@@ -110,8 +98,7 @@ const mockBooks = [
   {
     title: "The Picture of Dorian Gray",
     author: "Oscar Wilde",
-    genre: "Gothic Fiction",
-    isbn: "978-1503290295",
+    isbn: "9781503290295",
     publisher: "CreateSpace Independent Publishing Platform",
     year: 1890,
     copies: 6,
@@ -119,8 +106,7 @@ const mockBooks = [
   {
     title: "Frankenstein",
     author: "Mary Shelley",
-    genre: "Gothic Fiction",
-    isbn: "978-0486282114",
+    isbn: "9780486282114",
     publisher: "Dover Publications",
     year: 1818,
     copies: 9,
@@ -128,8 +114,7 @@ const mockBooks = [
   {
     title: "The Grapes of Wrath",
     author: "John Steinbeck",
-    genre: "Social Fiction",
-    isbn: "978-0143039433",
+    isbn: "9780143039433",
     publisher: "Penguin Books",
     year: 1939,
     copies: 11,

@@ -1,0 +1,103 @@
+body {
+    height: 100vh;
+    margin: 0;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(to bottom, #5fc3e1, #6c0c6c);
+}
+
+.h-top-bar-text{
+  font-size: 3.5rem;
+}
+
+.h-top-bar {
+    width: 100%;
+    height: 80px;
+    background-color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.h-layout {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.h-hello-form{
+    display: flex;
+    flex-direction: column;
+    gap: 0rem;
+    align-items: flex-start;
+    margin-top: 20px;
+    margin-left: 20px;
+}
+
+.h-hello-text{
+    color: rgba(19, 19, 19, 0.38);
+    font-size: 4rem;
+    font-family: Verdana;
+}
+
+.h-choose-text {
+    color: #959595;
+}
+
+.h-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.h-rectangle {
+    width: 45%;
+    height: 600px;
+    background-color: rgba(255, 255, 255, 0.8);
+    margin: 20px;
+}
+
+.h-action-buttons {
+    margin-top: 50px;
+    margin-bottom: 50px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 50px;
+}
+
+.h-two-buttons {
+    display: flex;
+    flex-direction: row;
+    gap: 90px;
+}
+
+.h-loans-list-container,
+.h-books-list-container,
+.h-users-list-container {
+    padding: 20px;
+}
+
+.h-search-bar {
+    width: 610px;
+    padding: 10px;
+    margin-bottom: 20px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.h-loans-list,
+.h-books-list {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.h-loan-item,
+.h-book-item {
+    background: #f5f5f5;
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 4px;
+}

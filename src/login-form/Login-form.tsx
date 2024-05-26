@@ -3,12 +3,16 @@ import { Button, TextField } from "@mui/material";
 import React, { useCallback, useMemo } from "react";
 import { Formik, Field, Form, useFormik, yupToFormErrors } from "formik";
 import * as yup from "yup";
+import { useNavigate } from "react-router-dom";
 
 function LoginForm() {
   const initialValues = { username: "", password: "" };
+  const navigate = useNavigate();
+
   const onSubmit = useCallback(
     (values: { username: string; password: string }, formik: any) => {
       console.log(values);
+      navigate("/HomePage");
     },
     [],
   );
