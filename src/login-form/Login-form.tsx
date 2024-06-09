@@ -4,23 +4,30 @@ import React, { useCallback, useMemo } from "react";
 import { Formik, Field, Form, useFormik, yupToFormErrors } from "formik";
 import * as yup from "yup";
 import { useNavigate } from "react-router-dom";
+import { useApi } from "../api/ApiProvider";
 
 function LoginForm() {
-  const initialValues = { username: "", password: "" };
+  const initialValues = { userName: "", password: "" };
   const navigate = useNavigate();
+  const apiClient = useApi();
 
   const onSubmit = useCallback(
-    (values: { username: string; password: string }, formik: any) => {
-      console.log(values);
-      navigate("/HomePage");
+    (values: { userName: string; password: string }, formik: any) => {
+      apiClient.login(values).then((response) => {
+        if (response.success) {
+          navigate("/HomePage");
+        } else {
+          formik.setFieldError("password", "Invalid Username or password");
+        }
+      });
     },
-    [],
+    [apiClient, navigate],
   );
 
   const validationSchema = useMemo(
     () =>
       yup.object().shape({
-        username: yup.string().required("Username is required"),
+        userName: yup.string().required("Username is required"),
         password: yup.string().required("Password is required"),
       }),
     [],
@@ -45,14 +52,14 @@ function LoginForm() {
               noValidate
             >
               <TextField
-                id="username"
+                id="userName"
                 label="Username"
                 variant="standard"
-                name="username"
+                name="userName"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                error={formik.touched.username && !!formik.errors.username}
-                helperText={formik.touched.username && formik.errors.username}
+                error={formik.touched.userName && !!formik.errors.userName}
+                helperText={formik.touched.userName && formik.errors.userName}
               />
               <TextField
                 id="password"

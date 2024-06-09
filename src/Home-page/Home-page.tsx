@@ -10,13 +10,46 @@ import {
 } from "@mui/material";
 import mockLoans from "./mockLoans";
 import mockBooks from "./mockBooks";
+import { useApi } from "../api/ApiProvider";
+import { useNavigate } from "react-router-dom";
+import mockUsers from "./mockUsers";
 
 function HomePage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [view, setView] = useState("loans");
+  const navigate = useNavigate();
+
+  const apiClient = useApi();
+  apiClient.getAllBooks().then((response) => {
+    console.log(response);
+  });
 
   const handleViewChange = (event: SelectChangeEvent<string>) => {
     setView(event.target.value);
+  };
+
+  const handleAddLoanClick = () => {
+    navigate("/HomePage/featureLoan");
+  };
+
+  const handleRemoveLoanClick = () => {
+    navigate("/HomePage/featureLoan");
+  };
+
+  const handleAddUserClick = () => {
+    navigate("/HomePage/featureUser");
+  };
+
+  const handleRemoveUserClick = () => {
+    navigate("/HomePage/featureUser");
+  };
+
+  const handleAddBookClick = () => {
+    navigate("/HomePage/featureBook");
+  };
+
+  const handleRemoveBookClick = () => {
+    navigate("/HomePage/featureBook");
   };
 
   const LoansList = () => (
@@ -79,7 +112,19 @@ function HomePage() {
 
   const UsersList = () => (
     <div className="h-users-list-container">
-      <p>Under development...</p>
+      {mockUsers
+        .filter((user) =>
+          `${user.id} ${user.userName} ${user.role}`
+            .toLowerCase()
+            .includes(searchTerm.toLowerCase()),
+        )
+        .map((user, index) => (
+          <div className="h-book-item" key={index}>
+            <p>id: {user.id}</p>
+            <p>username: {user.userName}</p>
+            <p>role: {user.role}</p>
+          </div>
+        ))}
     </div>
   );
 
@@ -101,6 +146,7 @@ function HomePage() {
                   <Button
                     variant="contained"
                     size="large"
+                    onClick={handleAddLoanClick}
                     sx={{
                       backgroundColor: "#6199c5",
                       color: "#fff",
@@ -114,6 +160,7 @@ function HomePage() {
                   <Button
                     variant="contained"
                     size="large"
+                    onClick={handleRemoveLoanClick}
                     sx={{
                       backgroundColor: "#6199c5",
                       color: "#fff",
@@ -129,6 +176,7 @@ function HomePage() {
                   <Button
                     variant="contained"
                     size="large"
+                    onClick={handleAddUserClick}
                     sx={{
                       backgroundColor: "#6199c5",
                       color: "#fff",
@@ -142,6 +190,7 @@ function HomePage() {
                   <Button
                     variant="contained"
                     size="large"
+                    onClick={handleRemoveUserClick}
                     sx={{
                       backgroundColor: "#6199c5",
                       color: "#fff",
@@ -157,6 +206,7 @@ function HomePage() {
                   <Button
                     variant="contained"
                     size="large"
+                    onClick={handleAddBookClick}
                     sx={{
                       backgroundColor: "#6199c5",
                       color: "#fff",
@@ -170,6 +220,7 @@ function HomePage() {
                   <Button
                     variant="contained"
                     size="large"
+                    onClick={handleRemoveBookClick}
                     sx={{
                       backgroundColor: "#6199c5",
                       color: "#fff",
