@@ -1,17 +1,21 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, TextField } from "@mui/material";
 import "./featureBook.css";
 import { useNavigate } from "react-router-dom";
 import mockLoans from "../Home-page/mockLoans";
 import mockBooks from "../Home-page/mockBooks";
+import { useTranslation } from "react-i18next";
+import LanguageSwitcher from "../LanguageSwitcher";
+import { useApi } from "../api/ApiProvider";
 
 interface Book {
+  bookId: number;
   title: string;
   author: string;
   isbn: string;
   publisher: string;
-  year: number;
-  copies: number;
+  publishYear: number;
+  availableCopies: number;
 }
 
 function FeatureUser() {
@@ -24,6 +28,9 @@ function FeatureUser() {
   const [year, setYear] = useState("");
   const [copies, setCopies] = useState("");
   const [selectedBook, setSelectedBook] = useState<Book | null>(null);
+  const { t } = useTranslation();
+  const [books, setBooks] = useState<Book[]>([]);
+  const apiClient = useApi();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,55 +45,73 @@ function FeatureUser() {
     });
   };
 
-  const handleLoanClick = (book: Book) => {
-    setSelectedBook(book);
-  };
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const booksResponse = await apiClient.getAllBooks();
+        setBooks(booksResponse.data);
+      } catch (error) {
+        console.error("Error fetching data", error);
+      }
+    };
 
-  const handleDeleteBook = () => {
-    console.log("Deleting book:", selectedBook);
-    setSelectedBook(null);
-  };
+    fetchData();
+  }, [apiClient]);
 
-  const BookList = () => (
-    <div className="b-loans-list-container">
-      {mockBooks
-        .filter((book) =>
-          `${book.title} ${book.author} ${book.isbn} ${book.publisher} ${book.year} ${book.copies}`
-            .toLowerCase()
-            .includes(searchTerm.toLowerCase()),
-        )
-        .map((book, index) => (
-          <div
-            className="b-loan-item"
-            key={index}
-            onClick={() => handleLoanClick(book)}
-          >
-            <p>Title: {book.title}</p>
-            <p>Author: {book.author}</p>
-            <p>ISBN: {book.isbn}</p>
-            <p>Publisher: {book.publisher}</p>
-            <p>Year: {book.year}</p>
-            <p>Coopies: {book.copies}</p>
-          </div>
-        ))}
+  const BooksList = () => (
+    <div className="h-books-list-container">
+      <input
+        type="text"
+        placeholder={t("searchBooks")}
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        className="h-search-bar"
+      />
+      <div className="h-books-list">
+        {books
+          .filter((book) =>
+            `${book.title} ${book.author} ${book.publisher}`
+              .toLowerCase()
+              .includes(searchTerm.toLowerCase()),
+          )
+          .map((book, index) => (
+            <div className="h-book-item" key={index}>
+              <h2>{book.title}</h2>
+              <p>
+                {t("author")}: {book.author}
+              </p>
+              <p>ISBN: {book.isbn}</p>
+              <p>
+                {t("publisher")}: {book.publisher}
+              </p>
+              <p>
+                {t("year")}: {book.publishYear}
+              </p>
+              <p>
+                {t("copies")}: {book.availableCopies}
+              </p>
+            </div>
+          ))}
+      </div>
     </div>
   );
 
   return (
     <div className="b-layout">
-      <div className="b-top-bar">
-        <p className="b-top-bar-text">Library</p>
+      <div className="h-top-bar">
+        <LanguageSwitcher />
+        <p className="top-bar-text">{t("library")}</p>
       </div>
       <div className="b-rectangle-form">
         <div className="b-container">
           <div className="b-rectangle">
             <div className="b-hello-form">
-              <p className="b-hello-text">Add Book</p>
+              <p className="b-hello-text">{t("addBook")}</p>
             </div>
             <form onSubmit={handleSubmit} className="b-form">
               <div style={{ marginLeft: "20px" }}>
                 <TextField
-                  label="Title"
+                  label={t("title")}
                   value={title}
                   sx={{ width: "80%" }}
                   onChange={(e) => setTitle(e.target.value)}
@@ -94,7 +119,7 @@ function FeatureUser() {
                   margin="normal"
                 />
                 <TextField
-                  label="Author"
+                  label={t("author")}
                   value={author}
                   sx={{ width: "80%" }}
                   onChange={(e) => setAuthor(e.target.value)}
@@ -110,7 +135,7 @@ function FeatureUser() {
                   margin="normal"
                 />
                 <TextField
-                  label="Publisher"
+                  label={t("publisher")}
                   value={publisher}
                   sx={{ width: "80%" }}
                   onChange={(e) => setPublisher(e.target.value)}
@@ -118,7 +143,7 @@ function FeatureUser() {
                   margin="normal"
                 />
                 <TextField
-                  label="Year"
+                  label={t("year")}
                   value={year}
                   sx={{ width: "80%" }}
                   onChange={(e) => setYear(e.target.value)}
@@ -126,7 +151,7 @@ function FeatureUser() {
                   margin="normal"
                 />
                 <TextField
-                  label="Copies"
+                  label={t("copies")}
                   value={copies}
                   sx={{ width: "80%" }}
                   onChange={(e) => setCopies(e.target.value)}
@@ -141,34 +166,27 @@ function FeatureUser() {
                   size="large"
                   className="submit-button"
                 >
-                  Submit
+                  {t("submit")}
                 </Button>
               </div>
             </form>
           </div>
           <div className="b-rectangle">
             <TextField
-              label="Search"
+              label={t("search")}
               value={searchTerm}
               sx={{ width: "80%", margin: "20px" }}
               onChange={(e) => setSearchTerm(e.target.value)}
               fullWidth
               margin="normal"
             />
-            <BookList />
+            <BooksList />
             {selectedBook && (
               <div className="b-delete-loan-container">
                 <p>
                   Are you sure you want to delete this book:{" "}
                   {selectedBook.title}?
                 </p>
-                <Button
-                  onClick={handleDeleteBook}
-                  variant="contained"
-                  color="secondary"
-                >
-                  DELETE
-                </Button>
               </div>
             )}
           </div>

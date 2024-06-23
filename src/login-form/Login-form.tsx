@@ -5,17 +5,30 @@ import { Formik, Field, Form, useFormik, yupToFormErrors } from "formik";
 import * as yup from "yup";
 import { useNavigate } from "react-router-dom";
 import { useApi } from "../api/ApiProvider";
+import { useTranslation } from "react-i18next";
+import LanguageSwitcher from "../LanguageSwitcher";
 
 function LoginForm() {
   const initialValues = { userName: "", password: "" };
   const navigate = useNavigate();
   const apiClient = useApi();
+  const { t } = useTranslation();
 
   const onSubmit = useCallback(
     (values: { userName: string; password: string }, formik: any) => {
+      console.log("Submitting form with values: ", values);
       apiClient.login(values).then((response) => {
-        if (response.success) {
-          navigate("/HomePage");
+        console.log("Response from login: ", response);
+        if (response.success && response.data) {
+          const role = response.data.role;
+          switch (role) {
+            case "ROLE_LIBRARIAN":
+              navigate("/HomePage");
+              break;
+            case "ROLE_READER":
+              navigate("/UserHome");
+              break;
+          }
         } else {
           formik.setFieldError("password", "Invalid Username or password");
         }
@@ -36,15 +49,16 @@ function LoginForm() {
   return (
     <div className="page">
       <div className="top-bar">
-        <p className="top-bar-text">Library</p>
+        <LanguageSwitcher />
+        <p className="top-bar-text">{t("library")}</p>
       </div>
       <div className="white-container">
         <Formik
           initialValues={initialValues}
           onSubmit={onSubmit}
-          validation={validationSchema}
+          validationSchema={validationSchema}
         >
-          {(formik: any) => (
+          {(formik) => (
             <form
               className="LoginForm"
               id="LoginForm"
@@ -53,7 +67,7 @@ function LoginForm() {
             >
               <TextField
                 id="userName"
-                label="Username"
+                label={t("username")}
                 variant="standard"
                 name="userName"
                 onChange={formik.handleChange}
@@ -63,7 +77,7 @@ function LoginForm() {
               />
               <TextField
                 id="password"
-                label="Password"
+                label={t("password")}
                 variant="standard"
                 type="password"
                 name="password"
@@ -76,13 +90,9 @@ function LoginForm() {
                 variant="contained"
                 type="submit"
                 form="LoginForm"
-                disabled={
-                  !formik.isValid //||
-                  // !formik.touched.password ||
-                  // formik.touched.username
-                }
+                disabled={!formik.isValid}
               >
-                Log in
+                {t("logIn")}
               </Button>
             </form>
           )}
