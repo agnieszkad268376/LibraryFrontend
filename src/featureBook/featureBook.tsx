@@ -1,15 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button, TextField } from "@mui/material";
 import "./featureBook.css";
 import { useNavigate } from "react-router-dom";
-import mockLoans from "../Home-page/mockLoans";
-import mockBooks from "../Home-page/mockBooks";
 import { useTranslation } from "react-i18next";
 import LanguageSwitcher from "../LanguageSwitcher";
 import { useApi } from "../api/ApiProvider";
 
 interface Book {
-  bookId: number;
   title: string;
   author: string;
   isbn: string;
@@ -28,9 +25,22 @@ function FeatureUser() {
   const [year, setYear] = useState("");
   const [copies, setCopies] = useState("");
   const [selectedBook, setSelectedBook] = useState<Book | null>(null);
-  const { t } = useTranslation();
   const [books, setBooks] = useState<Book[]>([]);
+  const { t } = useTranslation();
   const apiClient = useApi();
+
+  useEffect(() => {
+    const fetchBooks = async () => {
+      try {
+        const response = await apiClient.getAllBooks();
+        setBooks(response.data);
+      } catch (error) {
+        console.error("Error fetching books", error);
+      }
+    };
+
+    fetchBooks();
+  }, [apiClient]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -45,54 +55,42 @@ function FeatureUser() {
     });
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const booksResponse = await apiClient.getAllBooks();
-        setBooks(booksResponse.data);
-      } catch (error) {
-        console.error("Error fetching data", error);
-      }
-    };
+  const handleLoanClick = (book: Book) => {
+    setSelectedBook(book);
+  };
 
-    fetchData();
-  }, [apiClient]);
-
-  const BooksList = () => (
-    <div className="h-books-list-container">
-      <input
-        type="text"
-        placeholder={t("searchBooks")}
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        className="h-search-bar"
-      />
-      <div className="h-books-list">
-        {books
-          .filter((book) =>
-            `${book.title} ${book.author} ${book.publisher}`
-              .toLowerCase()
-              .includes(searchTerm.toLowerCase()),
-          )
-          .map((book, index) => (
-            <div className="h-book-item" key={index}>
-              <h2>{book.title}</h2>
-              <p>
-                {t("author")}: {book.author}
-              </p>
-              <p>ISBN: {book.isbn}</p>
-              <p>
-                {t("publisher")}: {book.publisher}
-              </p>
-              <p>
-                {t("year")}: {book.publishYear}
-              </p>
-              <p>
-                {t("copies")}: {book.availableCopies}
-              </p>
-            </div>
-          ))}
-      </div>
+  const BookList = () => (
+    <div className="b-loans-list-container">
+      {books
+        .filter((book) =>
+          `${book.title} ${book.author} ${book.isbn} ${book.publisher} ${book.publishYear} ${book.availableCopies}`
+            .toLowerCase()
+            .includes(searchTerm.toLowerCase()),
+        )
+        .map((book, index) => (
+          <div
+            className="b-loan-item"
+            key={index}
+            onClick={() => handleLoanClick(book)}
+          >
+            <p>
+              {t("title")}: {book.title}
+            </p>
+            <p>
+              {t("author")}: {book.author}
+            </p>
+            <p>ISBN: {book.isbn}</p>
+            <p>
+              {t("publisher")}: {book.publisher}
+            </p>
+            <p>
+              {t("year")}: {book.publishYear}
+            </p>
+            <p>
+              {t("copies")}: {book.availableCopies}
+            </p>
+          </div>
+        ))}
     </div>
   );
 
@@ -166,21 +164,21 @@ function FeatureUser() {
                   size="large"
                   className="submit-button"
                 >
-                  {t("submit")}
+                  {t("year")}
                 </Button>
               </div>
             </form>
           </div>
           <div className="b-rectangle">
             <TextField
-              label={t("search")}
+              label="Search"
               value={searchTerm}
               sx={{ width: "80%", margin: "20px" }}
               onChange={(e) => setSearchTerm(e.target.value)}
               fullWidth
               margin="normal"
             />
-            <BooksList />
+            <BookList />
             {selectedBook && (
               <div className="b-delete-loan-container">
                 <p>

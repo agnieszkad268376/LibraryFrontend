@@ -1,17 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button, TextField } from "@mui/material";
 import "./featureLoan.css";
 import { useNavigate } from "react-router-dom";
-import mockLoans from "../Home-page/mockLoans";
+import { useTranslation } from "react-i18next";
+import LanguageSwitcher from "../LanguageSwitcher";
+import { useApi } from "../api/ApiProvider";
 
 interface Loan {
-  user: string;
-  bookTitle: string;
+  userId: { id: number; userName: string; email: string };
+  bookId: { id: number; title: string; author: string };
   loanDate: string;
-  dueDate: string;
+  terminDate: string;
 }
 
-function FeatureUser() {
+function FeatureLoan() {
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
   const [userLoan, setUserLoan] = useState("");
@@ -19,6 +21,22 @@ function FeatureUser() {
   const [terminDate, setTerminDate] = useState("");
   const [dueDate, setDueDate] = useState("");
   const [selectedLoan, setSelectedLoan] = useState<Loan | null>(null);
+  const [loans, setLoans] = useState<Loan[]>([]);
+  const { t } = useTranslation();
+  const apiClient = useApi();
+
+  useEffect(() => {
+    const fetchLoans = async () => {
+      try {
+        const response = await apiClient.getAllLoans();
+        setLoans(response.data);
+      } catch (error) {
+        console.error("Error fetching loans", error);
+      }
+    };
+
+    fetchLoans();
+  }, [apiClient]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,33 +49,28 @@ function FeatureUser() {
     });
   };
 
-  const handleLoanClick = (loan: Loan) => {
-    setSelectedLoan(loan);
-  };
-
-  const handleDeleteLoan = () => {
-    console.log("Deleting loan:", selectedLoan);
-    setSelectedLoan(null);
-  };
-
   const LoansList = () => (
     <div className="l-loans-list-container">
-      {mockLoans
+      {loans
         .filter((loan) =>
-          `${loan.user} ${loan.bookTitle} ${loan.loanDate} ${loan.dueDate}`
+          `${loan.userId} ${loan.bookId} ${loan.loanDate} ${loan.terminDate}`
             .toLowerCase()
             .includes(searchTerm.toLowerCase()),
         )
         .map((loan, index) => (
-          <div
-            className="l-loan-item"
-            key={index}
-            onClick={() => handleLoanClick(loan)}
-          >
-            <p>User: {loan.user}</p>
-            <p>Book Title: {loan.bookTitle}</p>
-            <p>Loan Date: {loan.loanDate}</p>
-            <p>Due Date: {loan.dueDate}</p>
+          <div className="l-loan-item" key={index}>
+            <p>
+              {t("user")}: {loan.userId.userName}
+            </p>
+            <p>
+              {t("title")}: {loan.bookId.title}
+            </p>
+            <p>
+              {t("loanDate")}: {loan.loanDate}
+            </p>
+            <p>
+              {t("terminDate")}: {loan.terminDate}
+            </p>
           </div>
         ))}
     </div>
@@ -65,19 +78,20 @@ function FeatureUser() {
 
   return (
     <div className="l-layout">
-      <div className="l-top-bar">
-        <p className="l-top-bar-text">Library</p>
+      <div className="h-top-bar">
+        <LanguageSwitcher />
+        <p className="top-bar-text">{t("library")}</p>
       </div>
       <div className="l-rectangle-form">
         <div className="l-container">
           <div className="l-rectangle">
             <div className="l-hello-form">
-              <h1 className="l-hello-text">Add Loan</h1>
+              <h1 className="l-hello-text">{t("addLoan")}</h1>
             </div>
             <form onSubmit={handleSubmit} className="l-form">
               <div style={{ marginLeft: "20px" }}>
                 <TextField
-                  label="User"
+                  label={t("user")}
                   value={userLoan}
                   sx={{ width: "80%" }}
                   onChange={(e) => setUserLoan(e.target.value)}
@@ -85,7 +99,7 @@ function FeatureUser() {
                   margin="normal"
                 />
                 <TextField
-                  label="Book Title"
+                  label={t("title")}
                   value={bookLoan}
                   sx={{ width: "80%" }}
                   onChange={(e) => setBookLoan(e.target.value)}
@@ -93,7 +107,7 @@ function FeatureUser() {
                   margin="normal"
                 />
                 <TextField
-                  label="Loan Date"
+                  label={t("loanDate")}
                   value={terminDate}
                   sx={{ width: "80%" }}
                   onChange={(e) => setTerminDate(e.target.value)}
@@ -101,7 +115,7 @@ function FeatureUser() {
                   margin="normal"
                 />
                 <TextField
-                  label="Due Date"
+                  label={t("terminDate")}
                   value={dueDate}
                   sx={{ width: "80%" }}
                   onChange={(e) => setDueDate(e.target.value)}
@@ -116,7 +130,7 @@ function FeatureUser() {
                   size="large"
                   className="submit-button"
                 >
-                  Submit
+                  {t("submit")}
                 </Button>
               </div>
             </form>
@@ -131,21 +145,7 @@ function FeatureUser() {
               margin="normal"
             />
             <LoansList />
-            {selectedLoan && (
-              <div className="l-delete-loan-container">
-                <p>
-                  Are you sure you want to delete this loan: {selectedLoan.user}
-                  ?
-                </p>
-                <Button
-                  onClick={handleDeleteLoan}
-                  variant="contained"
-                  color="secondary"
-                >
-                  DELETE
-                </Button>
-              </div>
-            )}
+            {selectedLoan && <div className="l-delete-loan-container"></div>}
           </div>
         </div>
       </div>
@@ -153,4 +153,4 @@ function FeatureUser() {
   );
 }
 
-export default FeatureUser;
+export default FeatureLoan;

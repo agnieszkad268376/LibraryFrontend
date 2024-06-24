@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Button,
   TextField,
@@ -9,7 +9,9 @@ import {
 } from "@mui/material";
 import "./featureUser.css";
 import { useNavigate } from "react-router-dom";
-import mockUsers from "../Home-page/mockUsers";
+import LanguageSwitcher from "../LanguageSwitcher";
+import { useTranslation } from "react-i18next";
+import { useApi } from "../api/ApiProvider";
 
 interface User {
   id: number;
@@ -25,6 +27,22 @@ function FeatureUser() {
   const [email, setEmail] = useState("");
   const [userRole, setUserRole] = useState("");
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [users, setUsers] = useState<User[]>([]);
+  const { t } = useTranslation();
+  const apiClient = useApi();
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await apiClient.getAllUsers();
+        setUsers(response.data);
+      } catch (error) {
+        console.error("Error fetching users", error);
+      }
+    };
+
+    fetchUsers();
+  }, [apiClient]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,32 +53,18 @@ function FeatureUser() {
       email,
       userRole,
     });
-    navigate("/doctor/mypatients");
-  };
-
-  const handleUserClick = (user: User) => {
-    setSelectedUser(user);
-  };
-
-  const handleDeleteUser = () => {
-    console.log("Usuwanie użytkownika:", selectedUser);
-    setSelectedUser(null);
   };
 
   const UsersList = () => (
     <div className="u-users-list-container">
-      {mockUsers
+      {users
         .filter((user) =>
           `${user.id} ${user.userName} ${user.role}`
             .toLowerCase()
             .includes(searchTerm.toLowerCase()),
         )
         .map((user, index) => (
-          <div
-            className="h-book-item"
-            key={index}
-            onClick={() => handleUserClick(user)}
-          >
+          <div className="u-user-item" key={index}>
             <p>id: {user.id}</p>
             <p>username: {user.userName}</p>
             <p>role: {user.role}</p>
@@ -71,8 +75,9 @@ function FeatureUser() {
 
   return (
     <div className="b-layout">
-      <div className="u-top-bar">
-        <p className="u-top-bar-text">Library</p>
+      <div className="h-top-bar">
+        <LanguageSwitcher />
+        <p className="top-bar-text">{t("library")}</p>
       </div>
       <div className="u-rectangle-form">
         <div className="u-container">
@@ -143,13 +148,6 @@ function FeatureUser() {
                 <p>
                   Are you sure you want to delete user: {selectedUser.userName}?
                 </p>
-                <Button
-                  onClick={handleDeleteUser}
-                  variant="contained"
-                  color="secondary"
-                >
-                  DELETE
-                </Button>
               </div>
             )}
           </div>
